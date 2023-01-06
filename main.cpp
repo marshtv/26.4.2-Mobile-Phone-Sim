@@ -29,6 +29,32 @@ class PhoneNumber {
 			}
 		}
 
+		bool comparePhoneNumbers(std::string cmprNum_str) {
+			for (int i = 0; i < 12; i++) {
+				if (cmprNum_str[0] != country_char)
+					return false;
+				if (((int)cmprNum_str[1] + 48) != country_num)
+					return false;
+				if (i > 1 && i < 5) {
+					if (((int) cmprNum_str[i] + 48) != mob_ID[i - 2])
+						return false;
+				}
+				if (i > 4 && i < 8) {
+					if (((int) cmprNum_str[i] + 48) != reg_num[i - 5])
+						return false;
+				}
+				if (i > 7 && i < 10) {
+					if (((int) cmprNum_str[i] + 48) != first_pair[i - 8])
+						return false;
+				}
+				if (i > 9 && i < 12) {
+					if (((int) cmprNum_str[i] + 48) != first_pair[i - 10])
+						return false;
+				}
+			}
+			return true;
+		}
+
 		void showFullNum() {
 			for (int i = 0; i < 12; i++) {
 				if (i == 0)
@@ -68,6 +94,24 @@ class Contact {
 			lastName = lastName_str;
 			phoneNumber->initPhoneNum(phoneNum_str);
 		}
+
+		void showContact() {
+			std::cout << firstName << " " << lastName << ": ";
+			phoneNumber->showFullNum();
+			std::cout << std::endl;
+		}
+
+		std::string getFirstName() {
+			return firstName;
+		}
+
+		std::string getLastName() {
+			return lastName;
+		}
+
+		PhoneNumber* getPhoneNumber() {
+			return phoneNumber;
+		}
 };
 
 class MobilePhone {
@@ -98,6 +142,93 @@ class MobilePhone {
 			delete contact;
 			contact = nullptr;
 		}
+
+		void showContactsList() {
+			if (!contactBook.empty()) {
+				for (int i = 0; i < contactBook.size(); i++) {
+					contactBook[i]->showContact();
+				}
+			} else
+				std::cout << "No contacts exist :(" << std::endl;
+		}
+
+		PhoneNumber* getPhoneByName(std::string& firstName, std::string& lastName) {
+			for (int i = 0; i < contactBook.size(); i++) {
+				if (contactBook[i]->getFirstName() == firstName &&
+					contactBook[i]->getLastName() == lastName) {
+					return contactBook[i]->getPhoneNumber();
+				} else
+					return nullptr;
+			}
+		}
+
+		PhoneNumber* getPhoneByNumStr(std::string& phone_str) {
+			int count = 0;
+			for (int i = 0; i < contactBook.size(); i++) {
+				if (contactBook[i]->getPhoneNumber()->comparePhoneNumbers(phone_str))
+					return contactBook[i]->getPhoneNumber();
+				else
+					return nullptr;
+			}
+		}
+
+		void makeCall() {
+			std::cout << "Select Call method (1 - by Name, 2 - by phone number):";
+			int select;
+			std::cin >> select;
+			while (select < 1 || select > 2) {
+				std::cout << "ERROR input (1 or 2). Try again:";
+				std::cin >> select;
+			}
+			if (select == 1) {
+				std::cout << "Input First Name and Last Name:";
+				std::string f_name, l_name;
+				std::cin >> f_name >> l_name;
+				if (getPhoneByName(f_name, l_name) != nullptr) {
+					std::cout << "CALL ";
+					getPhoneByName(f_name, l_name)->showFullNum();
+				} else
+					std::cout << "No phone number exist with tis name :(" << std::endl;
+			} else {
+				std::cout << "Input Phone Number (with country code +7):";
+				std::string phone_str;
+				std::cin >> phone_str;
+				if (getPhoneByNumStr(phone_str) != nullptr) {
+					std::cout << "CALL ";
+					getPhoneByNumStr(phone_str)->showFullNum();
+				} else
+					std::cout << "No this phone number exist :(" << std::endl;
+			}
+		}
+
+	void sendSMS() {
+		std::cout << "Select SMS method (1 - by Name, 2 - by phone number):";
+		int select;
+		std::cin >> select;
+		while (select < 1 || select > 2) {
+			std::cout << "ERROR input (1 or 2). Try again:";
+			std::cin >> select;
+		}
+		if (select == 1) {
+			std::cout << "Input First Name and Last Name:";
+			std::string f_name, l_name;
+			std::cin >> f_name >> l_name;
+			if (getPhoneByName(f_name, l_name) != nullptr) {
+				std::cout << "CALL ";
+				getPhoneByName(f_name, l_name)->showFullNum();
+			} else
+				std::cout << "No phone number exist with tis name :(" << std::endl;
+		} else {
+			std::cout << "Input Phone Number (with country code +7):";
+			std::string phone_str;
+			std::cin >> phone_str;
+			if (getPhoneByNumStr(phone_str) != nullptr) {
+				std::cout << "CALL ";
+				getPhoneByNumStr(phone_str)->showFullNum();
+			} else
+				std::cout << "No this phone number exist :(" << std::endl;
+		}
+	}
 };
 
 int main() {
