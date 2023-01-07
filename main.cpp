@@ -198,7 +198,7 @@ class MobilePhone {
 				std::cout << std::endl;
 				std::cout << "Message:" << std::endl;
 				std::string sms_str;
-				std::getline(std::cin, sms_str);
+				std::getline(std::cin >> std::ws, sms_str);
 				std::cout << "Sent" << std::endl;
 			} else
 				std::cout << "No phone number exist with tis name :(" << std::endl;
